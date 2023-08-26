@@ -18,7 +18,7 @@ import { AdminCursosComponent } from './admin-cursos/admin-cursos.component';
 })
 export class MatriculaComponent {
   selectedStudent: Estudiante;
-  selectedcursos: any[] = [];
+  seleccionarcursos: any[] = [];
   dataSource = new MatTableDataSource();
   displayedColumns: string[] = [
     'IdCurso',
@@ -35,7 +35,7 @@ export class MatriculaComponent {
 
   CargarListaCursos() {
     try {
-      this.dataSource.data = this.selectedcursos;
+      this.dataSource.data = this.seleccionarcursos;
     } catch (error: any) {
       this.mensajeria.error(error);
     }
@@ -69,17 +69,28 @@ export class MatriculaComponent {
     });
   }
   cargarDatosForm() {
+    const {
+      IdEstudiante,
+      Nombre,
+      Apellido1,
+      Apellido2,
+      FechaNah,
+      Genero
+    } = this.selectedStudent;
+  
+    const formattedDate = formatDate(FechaNah, 'yyyy-MM-dd', 'en');
+  
     this.estudianteform.baseForm.patchValue({
-      IdEstudiante: this.selectedStudent.IdEstudiante,
-      Nombre: this.selectedStudent.Nombre,
-      Apellido1: this.selectedStudent.Apellido1,
-      Apellido2: this.selectedStudent.Apellido2,
-      FechaNah: formatDate(this.selectedStudent.FechaNah, 'yyyy-MM-dd', 'en'),
-      Genero: this.selectedStudent.Genero,
+      IdEstudiante,
+      Nombre,
+      Apellido1,
+      Apellido2,
+      FechaNah: formattedDate,
+      Genero,
       Estado: true,
     });
   }
-
+  
   abrircursos(cursos?: Cursos) {
     const dialogClosed = this.dialog.open(AdminCursosComponent, {
       width: '800px',
@@ -89,18 +100,18 @@ export class MatriculaComponent {
 
     dialogClosed.afterClosed().subscribe((cursos: Cursos) => {
       if (cursos) {
-        let cursoExistente = this.selectedcursos.find(
+        let cursoExistente = this.seleccionarcursos.find(
           (curso) => curso.IdCurso === cursos.IdCurso
         );
         if (!cursoExistente) {
-          this.selectedcursos.push(cursos);
+          this.seleccionarcursos.push(cursos);
           this.mensajeria.success('Agregado correctamente');
           setTimeout(() => {
             this.mensajeria.clear();
           }, 2000);
           this.CargarListaCursos();
         } else {
-          this.mensajeria.error('El curso ya está seleccionado.');
+          this.mensajeria.error('NO PUEDES SELECCIONAR EL MISMO CURSO');
           setTimeout(() => {
             this.mensajeria.clear();
           }, 2000);
@@ -109,69 +120,52 @@ export class MatriculaComponent {
     });
   }
 
-  EliminarCurso(idCurso: number) {
-    try {
-      this.selectedcursos = this.selectedcursos.filter(
-        (curso) => curso.IdCurso !== idCurso
-      );
-      this.mensajeria.success('Eliminado correctamente');
-      setTimeout(() => {
-        this.mensajeria.clear();
-      }, 2000);
-      this.CargarListaCursos();
-    } catch (error) {
-      this.mensajeria.error('Error al eliminar, intentelo de nuevo');
-      setTimeout(() => {
-        this.mensajeria.clear();
-      }, 2000);
-    }
-  }
 
   guardar() {
     if (!this.selectedStudent) {
-      this.mensajeria.error('Indique el estudiante');
-      setTimeout(() => {
-        this.mensajeria.clear();
-      }, 2000);
-    } else if (this.selectedcursos.length === 0) {
-      this.mensajeria.error('Indique al menos 1 curso');
-      setTimeout(() => {
-        this.mensajeria.clear();
-      }, 2000);
+      this.mostrarMensajeError('DEBES DE INDICAR EL ESTUDIANTE');
+    } else if (this.seleccionarcursos.length === 0) {
+      this.mostrarMensajeError('SE DEBE DE MATRICULAR AL MENOS UN CURSO');
     } else {
-     try {
-      const estudianteGuardar = {
-        IdEstudiante: this.selectedStudent.IdEstudiante,
-        cursos: this.selectedcursos.map(curso => ({ IdCurso: curso.IdCurso }))
-      };
-      
+      try {
+        const estudianteGuardar = {
+          IdEstudiante: this.selectedStudent.IdEstudiante,
+          cursos: this.seleccionarcursos.map(curso => ({ IdCurso: curso.IdCurso }))
+        };
+  
         this.srvEstudiante.guardarEstudianteConCursos(estudianteGuardar).subscribe(
-          (response) => {
-            const fecha = new Date();
-            this.mensajeria.success('Cursos asignados exitosamente');
-            this.estudianteform.baseForm.patchValue({
-              IdEstudiante: 0,
-              Nombre: "",
-              Apellido1: "",
-              Apellido2: "",
-              FechaNah: fecha,
-              Genero: "",
-              Estado: true,
-            })
-            this.seleccionado = false
-          this.selectedcursos = [];
-           this.CargarListaCursos();
+          () => {
+            this.mensajeria.success('ASIGNACIÓN EXITOSA');
+            this.resetearFormulario();
+            this.CargarListaCursos();
           },
-          (error) => {
+          error => {
             this.mensajeria.error(error.error.mensaje);
           }
-        ); 
-     } catch (error) {
-      this.mensajeria.error('Error al Guadar, intentelo de nuevo');
-      setTimeout(() => {
-        this.mensajeria.clear();
-      }, 2000);
-     }
+        );
+      } catch (error) {
+        this.mostrarMensajeError('Error al Guardar, inténtelo de nuevo');
+      }
     }
   }
+  
+  private resetearFormulario() {
+    const fecha = new Date();
+    this.estudianteform.baseForm.patchValue({
+      IdEstudiante: 0,
+      Nombre: '',
+      Apellido1: '',
+      Apellido2: '',
+      FechaNah: fecha,
+      Genero: '',
+      Estado: true,
+    });
+    this.seleccionado = false;
+    this.seleccionarcursos = [];
+  }
+  
+  private mostrarMensajeError(mensaje: string) {
+    this.mensajeria.error(mensaje, 'error');
+  }
 }
+  
