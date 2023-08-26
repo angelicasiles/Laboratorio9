@@ -1,0 +1,13 @@
+*{
+  background-color: rgb(241, 180, 180);
+  text-align: center;
+}
+.mat-toolbar {
+  display: flex;
+  align-items: center;
+}
+
+.spacer {
+  flex: 1;
+  justify-content: center;
+}

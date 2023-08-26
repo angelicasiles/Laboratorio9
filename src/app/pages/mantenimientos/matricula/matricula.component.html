@@ -1,0 +1,88 @@
+
+<div class="centered-container">
+  <mat-card class="card-container">
+    <form [formGroup]="estudianteform.baseForm">
+      <div class="button-container">
+        <button  mat-button (click)="abrircursos()">
+          Estudiante
+        </button>
+      </div>
+      <div class="grid-container">
+
+        <mat-form-field class="grid-item">
+          <mat-label>ID</mat-label>
+          <input matInput formControlName="IdEstudiante" />
+        </mat-form-field>
+        
+        <mat-form-field class="grid-item">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="Nombre" />
+        </mat-form-field>
+
+        <mat-form-field class="grid-item">
+          <mat-label>Apellido1</mat-label>
+          <input matInput formControlName="Apellido1" />
+        </mat-form-field>
+
+        <mat-form-field class="grid-item">
+          <mat-label>Apellido2</mat-label>
+          <input matInput formControlName="Apellido2" />
+        </mat-form-field>
+
+        <mat-form-field class="grid-item">
+          <mat-label>Fecha de Nacimiento</mat-label>
+          <input matInput formControlName="FechaNah" />
+        </mat-form-field>
+
+        <mat-form-field class="grid-item">
+          <mat-label>Genero</mat-label>
+          <input matInput formControlName="Genero" />
+        </mat-form-field>
+      </div>
+
+        <div class="button-container">
+          <button  mat-button (click)="abrircursos()">
+            Cursos
+          </button>
+        </div>
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- id de licencia -->
+        <ng-container matColumnDef="IdCurso">
+          <th mat-header-cell *matHeaderCellDef>IdCursos</th>
+          <td mat-cell *matCellDef="let element">{{ element.IdCurso }}</td>
+        </ng-container>
+    
+
+      
+        <!-- Nombre de la Licencia -->
+        <ng-container matColumnDef="NombreCurso">
+          <th mat-header-cell *matHeaderCellDef>Curso</th>
+          <td mat-cell *matCellDef="let element">{{ element.NombreCurso | uppercase }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="Creditos">
+          <th mat-header-cell *matHeaderCellDef>Creditos</th>
+          <td mat-cell *matCellDef="let element">{{ element.Creditos }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let element">
+          </td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        
+      </table>
+      
+      <div class="button-container">
+        <button  mat-button (click)="guardar()">
+          AGREGAR
+        </button>
+      </div>
+    </form>
+  </mat-card>
+  
+</div>

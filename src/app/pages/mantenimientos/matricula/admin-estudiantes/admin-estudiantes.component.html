@@ -1,0 +1,59 @@
+
+  <mat-form-field>
+    <mat-label>Busqueda</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input />
+  </mat-form-field>
+  
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!-- id de licencia -->
+    <ng-container matColumnDef="IdEstudiante">
+      <th mat-header-cell *matHeaderCellDef>Id licencias</th>
+      <td mat-cell *matCellDef="let element">{{ element.IdEstudiante }}</td>
+    </ng-container>
+  
+    <!-- Nombre de la Licencia -->
+    <ng-container matColumnDef="Nombre">
+      <th mat-header-cell *matHeaderCellDef>Licencia</th>
+      <td mat-cell *matCellDef="let element">{{ element.Nombre | uppercase }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Apellido1">
+      <th mat-header-cell *matHeaderCellDef>Licencia</th>
+      <td mat-cell *matCellDef="let element">{{ element.Apellido1 | uppercase }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Apellido2">
+      <th mat-header-cell *matHeaderCellDef>Licencia</th>
+      <td mat-cell *matCellDef="let element">{{ element.Apellido2 | uppercase }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="FechaNah">
+      <th mat-header-cell *matHeaderCellDef>Licencia</th>
+      <td mat-cell *matCellDef="let element">{{ element.FechaNah | uppercase }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Genero">
+      <th mat-header-cell *matHeaderCellDef>Licencia</th>
+      <td mat-cell *matCellDef="let element">{{ element.Genero | uppercase }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let element">
+            
+          <button mat-button color="disabled" (click)="Obtener(element)" [mat-dialog-close]>
+            <mat-icon>check</mat-icon> SELECCIONAR
+          </button>
+
+        </td>
+      </ng-container>
+      
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">
+          No data matching the filter "{{ input.value }}"
+        </td>
+      </tr>
+</table>
