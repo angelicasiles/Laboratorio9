@@ -136,7 +136,7 @@ export class MatriculaComponent {
         this.srvEstudiante.guardarEstudianteConCursos(estudianteGuardar).subscribe(
           () => {
             this.mensajeria.success('ASIGNACIÓN EXITOSA');
-            this.resetearFormulario();
+            this.clear();
             this.CargarListaCursos();
           },
           error => {
@@ -149,14 +149,13 @@ export class MatriculaComponent {
     }
   }
   
-  private resetearFormulario() {
-    const fecha = new Date();
+  private clear() {
     this.estudianteform.baseForm.patchValue({
       IdEstudiante: 0,
       Nombre: '',
       Apellido1: '',
       Apellido2: '',
-      FechaNah: fecha,
+      FechaNah: '',
       Genero: '',
       Estado: true,
     });
